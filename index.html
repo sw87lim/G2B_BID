@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>조달청 입찰공고 조회 시스템</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏗️ 조달청 입찰공고 조회 시스템</h1>
+            <p class="subtitle">냉방, 난방, 에어컨 관련 공고를 자동으로 수집합니다</p>
+        </header>
+
+        <section class="filters">
+            <div class="filter-group">
+                <input type="text" id="searchInput" placeholder="🔍 공고명, 기관명 검색..." class="search-input">
+            </div>
+            <div class="filter-group">
+                <label for="typeFilter">입찰 유형:</label>
+                <select id="typeFilter" class="select-box">
+                    <option value="">전체</option>
+                    <option value="공사">공사</option>
+                    <option value="물품">물품</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="statusFilter">상태:</label>
+                <select id="statusFilter" class="select-box">
+                    <option value="">전체</option>
+                    <option value="정상">정상</option>
+                    <option value="취소">취소</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="regionFilter">참가지역:</label>
+                <select id="regionFilter" class="select-box">
+                    <option value="">전체</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="locationFilter">수요기관 소재지:</label>
+                <select id="locationFilter" class="select-box">
+                    <option value="">전체</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="industryFilter">업종 제한:</label>
+                <select id="industryFilter" class="select-box">
+                    <option value="">전체</option>
+                </select>
+            </div>
+            <button id="resetBtn" class="btn-reset">초기화</button>
+        </section>
+
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">총 공고</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="constructionCount">0</div>
+                <div class="stat-label">공사</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="goodsCount">0</div>
+                <div class="stat-label">물품</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="urgentCount">0</div>
+                <div class="stat-label">긴급 (3일)</div>
+            </div>
+        </section>
+
+        <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+            <div class="spinner"></div>
+            <p>데이터 로드 중...</p>
+        </div>
+
+        <section class="table-section">
+            <div class="table-info">
+                <p><strong id="filteredCount">0</strong>건 표시</p>
+                <p class="last-updated">마지막 업데이트: <span id="lastUpdate">-</span></p>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="bidsTable" class="bids-table">
+                    <thead>
+                        <tr>
+                            <th class="col-no">No</th>
+                            <th class="col-pub-date">게시일</th>
+                            <th class="col-deadline">마감일</th>
+                            <th class="col-remaining">남은일수</th>
+                            <th class="col-bid-no">공고번호</th>
+                            <th class="col-title">공고명</th>
+                            <th class="col-agency">공고기관</th>
+                            <th class="col-req-agency">수요기관</th>
+                            <th class="col-amount">기초금액</th>
+                            <th class="col-est-amount">추정가격</th>
+                            <th class="col-region">참가지역</th>
+                            <th class="col-industry">업종제한사항</th>
+                            <th class="col-procedure">세부절차</th>
+                            <th class="col-contact">공고담당자</th>
+                            <th class="col-person">수요기관 담당자</th>
+                            <th class="col-phone">수요기관 전화번호</th>
+                            <th class="col-status">상태</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr><td colspan="17" class="loading-row">데이터 로드 중...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="noDataMessage" class="no-data-message" style="display: none;">
+                <p>❌ 조건에 맞는 공고가 없습니다.</p>
+            </div>
+        </section>
+
+        <section class="pagination" id="paginationContainer" style="display: none;">
+            <button id="prevBtn" class="btn-pagination">← 이전</button>
+            <div id="pageInfo" class="page-info">1 / 1</div>
+            <button id="nextBtn" class="btn-pagination">다음 →</button>
+        </section>
+
+        <footer class="footer">
+            <p>📅 자동 업데이트: 매일 09:00 ~ 18:00 (1시간 단위)</p>
+            <p>마지막 업데이트: <span id="lastUpdate">-</span></p>
+        </footer>
+    </div>
+
+    <!-- 🔴 개찰 결과 섹션 (하단 50%) -->
+    <div class="container-opening">
+        <header class="header header-opening">
+            <h1>🔓 조달청 입찰 개찰 결과</h1>
+            <p class="subtitle">최근 7일간 개찰된 공고의 결과 조회</p>
+        </header>
+
+        <section class="table-section">
+            <div class="table-info">
+                <p><strong id="openingCount">0</strong>건 표시</p>
+                <p class="last-updated">마지막 업데이트: <span id="lastOpeningUpdate">-</span></p>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="openingTable" class="bids-table opening-table">
+                    <thead>
+                        <tr>
+                            <th class="col-no">No</th>
+                            <th class="col-opening-date">개찰일</th>
+                            <th class="col-bid-no">공고번호</th>
+                            <th class="col-title">공고명</th>
+                            <th class="col-req-agency">수요기관</th>
+                            <th class="col-successful-bidder">낙찰예정자</th>
+                            <th class="col-bid-amount">투찰금액</th>
+                            <th class="col-bid-rate">투찰율</th>
+                            <th class="col-progress">진행상황</th>
+                            <th class="col-final-bidder">최종낙찰자</th>
+                            <th class="col-final-amount">낙찰금액</th>
+                        </tr>
+                    </thead>
+                    <tbody id="openingBody">
+                        <tr><td colspan="9" class="loading-row">데이터 로드 중...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="noOpeningDataMessage" class="no-data-message" style="display: none;">
+                <p>❌ 최근 개찰 결과가 없습니다.</p>
+            </div>
+        </section>
+
+        <section class="pagination" id="openingPaginationContainer" style="display: none;">
+            <button id="openingPrevBtn" class="btn-pagination">← 이전</button>
+            <div id="openingPageInfo" class="page-info">1 / 1</div>
+            <button id="openingNextBtn" class="btn-pagination">다음 →</button>
+        </section>
+
+        <footer class="footer">
+            <p>📅 자동 업데이트: 매일 09:00 ~ 18:00 (1시간 단위)</p>
+            <p>마지막 업데이트: <span id="lastOpeningUpdate">-</span></p>
+        </footer>
+    </div>
+
+    <!-- 🔵 낙찰예정자 정보 모달 -->
+    <div id="bidderModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>낙찰예정자 정보</h2>
+                <button class="modal-close" onclick="closeBidderModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="bidder-info">
+                    <div class="info-row">
+                        <span class="info-label">기업명:</span>
+                        <span class="info-value" id="modalBidderName">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">사업자번호:</span>
+                        <span class="info-value" id="modalBidderNumber">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">연락처:</span>
+                        <span class="info-value">
+                            <a id="modalBidderPhone" href="tel:" class="phone-link">-</a>
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">주소:</span>
+                        <span class="info-value address-row">
+                            <span id="modalBidderAddress" style="flex: 1;">-</span>
+                            <button class="btn-copy" onclick="copyAddress()" title="주소 복사">📋</button>
+                            <button class="btn-map" onclick="openGoogleMaps()" title="구글맵 검색">🗺️</button>
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">공고명:</span>
+                        <span class="info-value" id="modalBidTitle">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">투찰금액:</span>
+                        <span class="info-value" id="modalBidAmount">-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-close" onclick="closeBidderModal()">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="opening_script.js"></script>

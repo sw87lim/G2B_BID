@@ -1,0 +1,560 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --primary: #2954D1;
+    --light-gray: #f3f4f6;
+    --border-gray: #e5e7eb;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f9fafb;
+    color: var(--text-dark);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container { 
+    width: 100%; 
+    margin: 0; 
+    padding: 0; 
+    display: flex; 
+    flex-direction: column;
+    flex: 1;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.container-opening {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-height: 50vh;
+    overflow-y: auto;
+    border-top: 3px solid var(--primary);
+}
+
+.header {
+    background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
+    color: white;
+    padding: 15px 40px;
+    border-radius: 0;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+.header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+.subtitle { font-size: 0.9rem; opacity: 0.95; }
+
+.header-opening {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.filters {
+    background: white;
+    padding: 25px 40px;
+    border-radius: 0;
+    margin-bottom: 0;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1.2fr 1.2fr auto;
+    gap: 15px;
+    align-items: flex-end;
+    width: 100%;
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.filter-group { display: flex; flex-direction: column; }
+.filter-group label { font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
+
+.search-input, .select-box {
+    padding: 12px 15px;
+    border: 1px solid var(--border-gray);
+    border-radius: 6px;
+    font-family: inherit;
+}
+
+.search-input:focus, .select-box:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(41, 84, 209, 0.1);
+}
+
+.btn-reset {
+    padding: 12px 25px;
+    background: var(--light-gray);
+    border: 1px solid var(--border-gray);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-reset:hover { background: var(--border-gray); }
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 0;
+    width: 100%;
+    padding: 30px 40px;
+    background: white;
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.stat-card {
+    background: transparent;
+    padding: 15px 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: none;
+    border-left: 3px solid var(--primary);
+}
+
+.stat-number { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+.stat-label { font-size: 0.95rem; color: var(--text-light); }
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--light-gray);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.table-section {
+    background: white;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+    margin-bottom: 0;
+    width: 100%;
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.table-info {
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border-gray);
+    display: flex;
+    justify-content: space-between;
+}
+
+.table-wrapper { overflow-x: auto; }
+
+.bids-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.bids-table thead {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+}
+
+.bids-table th {
+    padding: 15px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.bids-table th.col-no { width: 50px; text-align: center; }
+.bids-table th.col-pub-date { min-width: 100px; }
+.bids-table th.col-deadline { min-width: 100px; }
+.bids-table th.col-remaining { min-width: 100px; text-align: center; }
+.bids-table th.col-bid-no { min-width: 100px; }
+.bids-table th.col-title { min-width: 280px; }
+.bids-table th.col-agency { min-width: 120px; }
+.bids-table th.col-req-agency { min-width: 140px; }
+.bids-table th.col-amount { min-width: 140px; text-align: right; }
+.bids-table th.col-est-amount { min-width: 140px; text-align: right; }
+.bids-table th.col-region { min-width: 120px; }
+.bids-table th.col-industry { min-width: 200px; }
+.bids-table th.col-procedure { min-width: 150px; }
+.bids-table th.col-contact { min-width: 110px; }
+.bids-table th.col-person { min-width: 140px; }
+.bids-table th.col-phone { min-width: 160px; }
+.bids-table th.col-status { min-width: 90px; }
+
+/* 개찰 결과 테이블 컬럼 너비 */
+.opening-table th.col-opening-date { min-width: 100px; }
+.opening-table th.col-bid-no { min-width: 100px; }
+.opening-table th.col-title { min-width: 250px; }
+.opening-table th.col-req-agency { min-width: 140px; }
+.opening-table th.col-successful-bidder { min-width: 120px; }
+.opening-table th.col-bid-amount { min-width: 150px; text-align: right; }
+.opening-table th.col-bid-rate { min-width: 120px; text-align: right; }
+.opening-table th.col-progress { min-width: 120px; }
+.opening-table th.col-final-bidder { min-width: 120px; }
+.opening-table th.col-final-amount { min-width: 140px; text-align: right; }
+
+/* 개찰 결과 테이블 바디 정렬 */
+.opening-table td.col-opening-date { text-align: center; }
+.opening-table td.col-bid-no { text-align: center; }
+.opening-table td.col-title { text-align: left; }
+.opening-table td.col-req-agency { text-align: left; }
+.opening-table td.col-successful-bidder { text-align: left; }
+.opening-table td.col-bid-amount { text-align: right; font-weight: 500; color: var(--primary); }
+.opening-table td.col-bid-rate { text-align: right; font-weight: 500; }
+.opening-table td.col-progress { text-align: center; }
+
+/* 최종낙찰자 & 낙찰금액 */
+.opening-table td.col-final-bidder { text-align: left; font-weight: 600; }
+.opening-table td.col-final-amount { text-align: right; font-weight: 600; }
+
+/* 낙찰예정자와 다른 경우 빨간색 강조 */
+.opening-table td.highlight-red {
+    color: #dc2626;
+    background-color: #fee2e2;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+.bids-table tbody tr { border-bottom: 1px solid var(--border-gray); }
+.bids-table tbody tr:hover { background: var(--light-gray); }
+
+.bids-table td {
+    padding: 15px;
+    vertical-align: middle;
+}
+
+.bids-table td.col-no { text-align: center; font-weight: 600; color: var(--primary); }
+.bids-table td.col-amount { text-align: right; font-weight: 500; color: var(--primary); }
+.bids-table td.col-remaining { text-align: center; font-weight: 600; }
+
+.bids-table td.col-remaining.urgent {
+    background: #fee2e2;
+    color: #ef4444;
+    border-radius: 4px;
+}
+
+.bids-table td.col-remaining.warning {
+    background: #fef3c7;
+    color: #f59e0b;
+    border-radius: 4px;
+}
+
+.bids-table td.col-remaining.safe {
+    background: #dcfce7;
+    color: #10b981;
+    border-radius: 4px;
+}
+
+.bids-table td.col-remaining.expired {
+    background: #f3f4f6;
+    color: var(--text-light);
+    text-decoration: line-through;
+    border-radius: 4px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.badge.construction { background: #dbeafe; color: #1e40af; }
+.badge.goods { background: #dcfce7; color: #166534; }
+.badge.normal { background: #dcfce7; color: #166534; }
+.badge.cancelled { background: #fee2e2; color: #991b1b; text-decoration: line-through; }
+
+.btn-link {
+    display: inline-block;
+    padding: 6px 12px;
+    background: var(--primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background 0.3s;
+    font-family: 'Courier New', monospace;
+}
+
+.btn-link:hover { background: #1e40af; }
+
+.no-data-message {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-light);
+    font-size: 1.1rem;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 0;
+    width: 100%;
+    padding: 25px 40px;
+    background: white;
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.btn-pagination {
+    padding: 10px 20px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-pagination:hover { background: #1e40af; }
+.btn-pagination:disabled { background: var(--border-gray); cursor: not-allowed; }
+
+.page-info { font-weight: 600; }
+
+.footer {
+    background: var(--light-gray);
+    padding: 30px 40px;
+    border-radius: 0;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    width: 100%;
+    margin-top: auto;
+}
+
+.footer p { margin: 5px 0; }
+
+@media (max-width: 768px) {
+    .filters { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.5rem; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .bids-table { font-size: 0.75rem; }
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.bidder-info {
+    display: grid;
+    gap: 20px;
+}
+
+.info-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 15px;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 0.95rem;
+}
+
+.info-value {
+    color: var(--text-dark);
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border-gray);
+    text-align: right;
+}
+
+.btn-modal-close {
+    padding: 10px 25px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.3s;
+}
+
+.btn-modal-close:hover {
+    background: #1e40af;
+}
+
+/* 지역 배지 스타일 (텍스트만) */
+.location-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-light);
+    background: none;
+    border: 1px solid var(--border-gray);
+    border-radius: 4px;
+}
+.bidder-link {
+    color: var(--primary);
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.3s;
+}
+
+.bidder-link:hover {
+    color: #1e40af;
+    text-decoration: none;
+}
+
+/* 주소 행 확장 기능 */
+.address-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-copy, .btn-map {
+    background: none;
+    border: 1px solid var(--border-gray);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.btn-copy:hover, .btn-map:hover {
+    background: var(--light-gray);
+    border-color: var(--primary);
+    transform: scale(1.1);
+}
+
+.btn-copy:active, .btn-map:active {
+    transform: scale(0.95);
+}
+
+/* 전화 링크 스타일 */
+.phone-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.phone-link:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
+
+/* 토스트 알림 */
+.toast-notification {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-dark);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 2000;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease-out;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
